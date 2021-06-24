@@ -1,18 +1,37 @@
-import React, {useState} from 'react';
+import React, {useState, useContext, useEffect, useCallback} from 'react';
 import RegisterComponent from '../../components/comman/SignUp';
-import envs from '../../config/env';
+import register, {clearAuthState} from '../../context/actions/auth/register';
+import {GlobalContext} from '../../context/reducers/Provider';
+import {useNavigation, useFocusEffect} from '@react-navigation/native';
+import {LOGIN} from '../../constants/routeName';
 
 const Register = () => {
   const [form, setForm] = useState({});
   const [errors, setErrors] = useState({});
-  // const {BACKEND_URL} = envs;
+  const {navigate} = useNavigation();
+  const {
+    authDispatch,
+    authState: {error, loading, data},
+  } = useContext(GlobalContext);
 
-  // console.log('backend_url', BACKEND_URL);
-  // console.log('__DEV__', __DEV__);
+  // useEffect(() => {
+  //   if (data) {
+  //     navigate(LOGIN);
+  //   }
+  // }, [data]);
+
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        if (data || error) {
+          clearAuthState()(authDispatch);
+        }
+      };
+    }, [data, error]),
+  );
 
   const onChange = ({name, value}) => {
     setForm({...form, [name]: value});
-
     if (value !== '') {
       if (name === 'password') {
         if (value.length < 6) {
@@ -49,8 +68,6 @@ const Register = () => {
   };
 
   const onSubmit = () => {
-    console.log('form', form);
-
     if (!form.userName) {
       setErrors(prev => {
         return {
@@ -95,6 +112,16 @@ const Register = () => {
         };
       });
     }
+
+    if (
+      Object.values(form).length === 5 &&
+      Object.values(form).every(
+        item =>
+          item.trim().length > 0 && Object.values(errors).every(item => !item),
+      )
+    ) {
+      register(form)(authDispatch);
+    }
   };
 
   return (
@@ -102,6 +129,8 @@ const Register = () => {
       onSubmit={onSubmit}
       onChange={onChange}
       form={form}
+      error={error}
+      loading={loading}
       errors={errors}
     />
   );
