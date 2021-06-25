@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, Image, TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Container from '../../comman/container/index';
@@ -8,8 +8,16 @@ import styles from './style';
 import {REGISTER} from '../../../constants/routeName';
 import Message from '../Message';
 
-const LoginComponent = ({error, onChange, onSubmit, loading}) => {
+const LoginComponent = ({
+  error,
+  onChange,
+  form,
+  justSignedUp,
+  onSubmit,
+  loading,
+}) => {
   const {navigate} = useNavigation();
+  const [isSecureEntry, setIsSecureEntry] = useState(true);
   return (
     <Container>
       <Image
@@ -22,6 +30,13 @@ const LoginComponent = ({error, onChange, onSubmit, loading}) => {
         <Text style={styles.SubTitle}>Please Login here</Text>
 
         <View style={styles.form}>
+          {justSignedUp && (
+            <Message
+              onDismiss={() => {}}
+              message="Account created successfully"
+              danger
+            />
+          )}
           {error && !error?.error && (
             <Message
               onDismiss={() => {}}
@@ -33,6 +48,7 @@ const LoginComponent = ({error, onChange, onSubmit, loading}) => {
           <Input
             label="Username"
             placeholder="Enter Username"
+            value={form.userName || null}
             iconPosition="right"
             onChangeText={value => {
               onChange({name: 'userName', value: value});
@@ -42,8 +58,15 @@ const LoginComponent = ({error, onChange, onSubmit, loading}) => {
           <Input
             label="Password"
             placeholder="Enter Password"
-            secureTextEntry={true}
-            icon={<Text>Show</Text>}
+            secureTextEntry={isSecureEntry}
+            icon={
+              <TouchableOpacity
+                onPress={() => {
+                  setIsSecureEntry(prev => !prev);
+                }}>
+                <Text>{isSecureEntry ? 'Show' : 'hide'}</Text>
+              </TouchableOpacity>
+            }
             iconPosition="right"
             onChangeText={value => {
               onChange({name: 'password', value: value});

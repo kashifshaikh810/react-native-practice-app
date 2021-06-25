@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect, useCallback} from 'react';
+import React, {useState, useContext, useCallback} from 'react';
 import RegisterComponent from '../../components/comman/SignUp';
 import register, {clearAuthState} from '../../context/actions/auth/register';
 import {GlobalContext} from '../../context/reducers/Provider';
@@ -13,12 +13,6 @@ const Register = () => {
     authDispatch,
     authState: {error, loading, data},
   } = useContext(GlobalContext);
-
-  // useEffect(() => {
-  //   if (data) {
-  //     navigate(LOGIN);
-  //   }
-  // }, [data]);
 
   useFocusEffect(
     useCallback(() => {
@@ -120,7 +114,9 @@ const Register = () => {
           item.trim().length > 0 && Object.values(errors).every(item => !item),
       )
     ) {
-      register(form)(authDispatch);
+      register(form)(authDispatch)(response => {
+        navigate(LOGIN, {data: response});
+      });
     }
   };
 

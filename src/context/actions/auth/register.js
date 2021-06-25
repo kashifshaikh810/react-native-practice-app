@@ -19,7 +19,8 @@ export default ({
     firstName: first_name,
     lastName: last_name,
   }) =>
-  dispatch => {
+  dispatch =>
+  onSuccess => {
     dispatch({
       type: REGISER_LOADING,
     });
@@ -36,11 +37,15 @@ export default ({
           type: REGISER_SUCCESS,
           payload: res.data,
         });
+
+        onSuccess(res.data);
       })
       .catch(err => {
         dispatch({
           type: REGISER_FAIL,
-          payload: err.response ? err.response.data : {error: 'Something went rong, please try again.'},
+          payload: err.response
+            ? err.response.data
+            : {error: 'Something went rong, please try again.'},
         });
       });
   };

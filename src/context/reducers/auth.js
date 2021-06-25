@@ -3,6 +3,7 @@ import {
   LOGIN_FAIL,
   LOGIN_LOADING,
   LOGIN_SUCCESS,
+  LOGOUT_USER,
   REGISER_FAIL,
   REGISER_LOADING,
   REGISER_SUCCESS,
@@ -24,7 +25,7 @@ const auth = (state, {type, payload}) => {
         data: payload,
       };
 
-      case LOGIN_SUCCESS:
+    case LOGIN_SUCCESS:
       return {
         ...state,
         loading: false,
@@ -32,8 +33,16 @@ const auth = (state, {type, payload}) => {
         isLoggedIn: true,
       };
 
+    case LOGOUT_USER:
+      return {
+        ...state,
+        loading: false,
+        data: null,
+        isLoggedIn: false,
+      };
+
     case REGISER_FAIL:
-      case LOGIN_FAIL:
+    case LOGIN_FAIL:
       return {
         ...state,
         loading: false,
