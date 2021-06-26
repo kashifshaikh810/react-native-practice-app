@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage';
-import {LOGOUT_USER} from '../../../constants/ActionTypes';
+import {LOGOUT_USER} from '../../../constants/ActionTypes/index';
 
 export default () => dispatch => {
   AsyncStorage.removeItem('token');
